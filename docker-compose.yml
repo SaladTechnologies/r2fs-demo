@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  sdnext:
+    image: sdnext_r2:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ gpu ]
+              count: all
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
+      BUCKET_NAME: salad-r2fs-testing
+      ENDPOINT: https://6259dc58f8a08e4a7e7454c8c0332e85.r2.cloudflarestorage.com
+      MODEL_PATH: Stable-diffusion/dreamshaper_8.safetensors
+    command: --quick --use-cuda --docs
+    ports:
+      - 7860:7860
