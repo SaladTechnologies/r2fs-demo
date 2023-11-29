@@ -3,27 +3,22 @@ set -eu
 
 s3fs --version
 
-echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > ${HOME}/.passwd-s3fs && chmod 600 ${HOME}/.passwd-s3fs
+echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY >${HOME}/.passwd-s3fs && chmod 600 ${HOME}/.passwd-s3fs
 
 chown -R $RUN_UID:$RUN_UID $DATA_DIR
 
 mkdir -p -m 600 $DATA_DIR/models
 s3fs -o url=$ENDPOINT \
--o endpoint=auto \
--o passwd_file=${HOME}/.passwd-s3fs \
--o uid=$RUN_UID \
--o gid=$(id -g) \
--o allow_other \
--o ensure_diskfree=1024 \
-$BUCKET_NAME $DATA_DIR/models
+  -o endpoint=auto \
+  -o passwd_file=${HOME}/.passwd-s3fs \
+  -o uid=$RUN_UID \
+  -o gid=$(id -g) \
+  -o allow_other \
+  -o ensure_diskfree=1024 \
+  -o nonempty \
+  $BUCKET_NAME $DATA_DIR/models
 
 echo "Mounted $BUCKET_NAME to $DATA_DIR/models"
 
 exec runuser -u $(id -un $RUN_UID) -g $(id -gn) -- \
-python "$INSTALLDIR"/launch.py \
---data-dir="$DATA_DIR" \
---ckpt $DATA_DIR/models/$MODEL_PATH \
---port $PORT \
---server-name "$HOST" \
---no-download \
-"$@"
+  "$INSTALLDIR"/entrypoint "$@"

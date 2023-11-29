@@ -1,4 +1,4 @@
-FROM saladtechnologies/sdnext:latest
+FROM saladtechnologies/sdnext:dynamic-r2fs
 
 RUN apt-get update -y && apt-get install -y s3fs kmod 
 
@@ -11,8 +11,5 @@ USER root
 RUN echo user_allow_other >> /etc/fuse.conf
 
 COPY launch .
-
-ENV HOST='0.0.0.0'
-ENV PORT=7860
 
 ENTRYPOINT ["./launch"]

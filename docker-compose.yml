@@ -20,7 +20,8 @@ services:
       AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
       BUCKET_NAME: salad-r2fs-testing
       ENDPOINT: https://6259dc58f8a08e4a7e7454c8c0332e85.r2.cloudflarestorage.com
-      MODEL_PATH: Stable-diffusion/dreamshaper_8.safetensors
+      CIVITAI_MODEL_VERSION_IDS: 128713
+      HOST: 0.0.0.0
     command: --quick --use-cuda --docs
     ports:
       - 7860:7860
